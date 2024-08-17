@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz sobre HTML5</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    #quizContainer {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .question {
+      margin: 20px 0;
+    }
+
+    .options {
+      list-style-type: none;
+      padding: 0;
+    }
+
+    .options li {
+      background-color: #eee;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .options li:hover {
+      background-color: #ddd;
+    }
+
+    .options li.correct {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .options li.wrong {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .nextButton {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: block;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    .nextButton:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="quizContainer">
+    <h1>Quiz sobre HTML5</h1>
+    <div id="question" class="question"></div>
+    <ul id="options" class="options"></ul>
+    <button id="nextButton" class="nextButton">Siguiente Pregunta</button>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "¿Qué significa HTML?",
+        options: [
+          "HyperText Markup Language",
+          "Home Tool Markup Language",
+          "HyperLinks and Text Markup Language",
+          "HyperText Media Language"
+        ],
+        correct: 0
+      },
+      {
+        question: "¿Cuál de los siguientes es un elemento HTML5?",
+        options: [
+          "<marquee>",
+          "<article>",
+          "<font>",
+          "<blink>"
+        ],
+        correct: 1
+      },
+      {
+        question: "¿Cuál es el propósito de la etiqueta <canvas> en HTML5?",
+        options: [
+          "Definir un área rectangular en la página web donde se pueden dibujar gráficos.",
+          "Agregar una animación automática a la página.",
+          "Agregar contenido multimedia como videos.",
+          "Crear enlaces interactivos."
+        ],
+        correct: 0
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    const questionElement = document.getElementById('question');
+    const optionsElement = document.getElementById('options');
+    const nextButton = document.getElementById('nextButton');
+
+    function loadQuestion() {
+      const q = quizData[currentQuestion];
+      questionElement.innerText = q.question;
+      optionsElement.innerHTML = '';
+
+      q.options.forEach((option, index) => {
+        const li = document.createElement('li');
+        li.innerText = option;
+        li.addEventListener('click', () => selectAnswer(index));
+        optionsElement.appendChild(li);
+      });
+    }
+
+    function selectAnswer(index) {
+      const q = quizData[currentQuestion];
+      const selectedOption = optionsElement.children[index];
+
+      if (index === q.correct) {
+        selectedOption.classList.add('correct');
+        score++;
+      } else {
+        selectedOption.classList.add('wrong');
+        optionsElement.children[q.correct].classList.add('correct');
+      }
+
+      Array.from(optionsElement.children).forEach(option => {
+        option.removeEventListener('click', selectAnswer);
+      });
+
+      nextButton.style.display = 'block';
+    }
+
+    nextButton.addEventListener('click', () => {
+      currentQuestion++;
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+      nextButton.style.display = 'none';
+    });
+
+    function showResult() {
+      questionElement.innerText = `Has completado el quiz. Tu puntuación es ${score} de ${quizData.length}.`;
+      optionsElement.innerHTML = '';
+      nextButton.style.display = 'none';
+    }
+
+    loadQuestion();
+  </script>
+
+</body>
+
+</html>
